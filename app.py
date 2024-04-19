@@ -38,6 +38,7 @@ def timeCruise(elem):
         return None
 
 current_time = datetime.now().strftime("%H:%M")
+today = datetime.today()
 
 #Funkcja do usuwania "przeterminowanych" rejsów
 def removeExpiredCruises(ship_data):
