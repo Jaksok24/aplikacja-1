@@ -16,7 +16,7 @@ def countPeopleOnCruise(ship_data, cruise_name, cruise_time):
     total_people = 0
     for cruise_data in ship_data:
         if cruise_data[2] == cruise_time and cruise_data[4] == cruise_name:
-            total_people = total_people + cruise_data[5]
+            total_people = total_people + int(cruise_data[5])
     return total_people
 
 #Funkcja dodająca przewidywany czas powrotu
@@ -175,7 +175,7 @@ if (selected == "Strona główna"):
 
     #Dodawanie dancych do poszczególnych tablic
     for new_row in c.fetchall():
-        dane = [f"Imię i nazwisko: {new_row[1]}", f"Numer telefonu: {new_row[6]} {new_row[7]}", f"{new_row[2]}", f"Statek: {new_row[3]}", f"{new_row[9]}" , int(new_row[8]), f"osób\nZaliczka: {new_row[4]}", f"Kwota zaliczki: {new_row[10]} zł", f"Bilet opłacony: {new_row[5]}", f"Notatki: {new_row[11]}", new_row[0]]
+        dane = [f"Imię i nazwisko: {new_row[1]}", f"Numer telefonu: {new_row[6]} {new_row[7]}", f"{new_row[2]}", f"Statek: {new_row[3]}", f"{new_row[9]}" , new_row[8], f"osób\nZaliczka: {new_row[4]}", f"Kwota zaliczki: {new_row[10]} zł", f"Bilet opłacony: {new_row[5]}", f"Notatki: {new_row[11]}", new_row[0]]
         if new_row[3] == "Albatros":
             albatros.append(dane)
         if new_row[3] == "Biała Mewa":
