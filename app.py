@@ -195,7 +195,7 @@ if (selected == "Strona główna"):
             cruise_time = elem[2]
             cruise_name = elem[4]
             total_people = countPeopleOnCruise(albatros, cruise_name, cruise_time)
-            total_people_markdown = st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>{total_people}<p>", unsafe_allow_html=True)
+            total_people_markdown = st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>Ilość osób: {total_people}<p>", unsafe_allow_html=True)
             if total_people > 60:
                 st.warning("Przekroczono limit osób", icon="🚨")
             with st.expander("Szczegóły"):
@@ -206,7 +206,7 @@ if (selected == "Strona główna"):
                 cruise_time = elem[2]
                 cruise_name = elem[4]
                 total_people = countPeopleOnCruise(biala_mewa, cruise_name, cruise_time)
-                total_people_markdown = st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>{total_people}<p>", unsafe_allow_html=True)
+                total_people_markdown = st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>Ilość osób: {total_people}<p>", unsafe_allow_html=True)
                 if total_people > 12:
                     st.warning("Przekroczono limit osób", icon="🚨")
                 with st.expander("Szczegóły"):
@@ -217,7 +217,7 @@ if (selected == "Strona główna"):
                 cruise_time = elem[2]
                 cruise_name = elem[4]
                 total_people = countPeopleOnCruise(kormoran, cruise_name, cruise_time)
-                total_people_markdown = st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>{total_people}<p>", unsafe_allow_html=True)
+                total_people_markdown = st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>Ilość osób: {total_people}<p>", unsafe_allow_html=True)
                 if total_people > 12:
                     st.warning("Przekroczono limit osób", icon="🚨")
                 with st.expander("Szczegóły"):
@@ -228,7 +228,7 @@ if (selected == "Strona główna"):
                 cruise_time = elem[2]
                 cruise_name = elem[4]
                 total_people = countPeopleOnCruise(ckt_vip, cruise_name, cruise_time)
-                total_people_markdown = st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>{total_people}<p>", unsafe_allow_html=True)
+                total_people_markdown = st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>Ilość osób: {total_people}<p>", unsafe_allow_html=True)
                 if total_people > 12:
                     st.warning("Przekroczono limit osób", icon="🚨")
                 with st.expander("Szczegóły"):
@@ -332,7 +332,7 @@ if (selected == "Rezerwacje"):
             cruise_name_rez = elem[4]
             cruise_date = elem[2]
             total_people_rez = countPeopleOnCruise_rez(albatros_rez, cruise_name_rez, cruise_time_rez)
-            st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>{total_people_rez}<p>", unsafe_allow_html=True)
+            st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>Ilość osób: {total_people_rez}<p>", unsafe_allow_html=True)
             with st.expander("Szczegóły"):
                 for a in elem:
                     st.write(a)
@@ -342,7 +342,7 @@ if (selected == "Rezerwacje"):
                 cruise_name_rez = elem[4]
                 cruise_date = elem[2]
                 total_people_rez = countPeopleOnCruise_rez(albatros_rez, cruise_name_rez, cruise_time_rez)
-                st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>{total_people_rez}<p>", unsafe_allow_html=True)
+                st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>Ilość osób: {total_people_rez}<p>", unsafe_allow_html=True)
                 with st.expander("Szczegóły"):
                     for a in elem:
                         st.write(a)
@@ -352,7 +352,7 @@ if (selected == "Rezerwacje"):
                 cruise_name_rez = elem[4]
                 cruise_date = elem[2]
                 total_people_rez = countPeopleOnCruise_rez(albatros_rez, cruise_name_rez, cruise_time_rez)
-                st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>{total_people_rez}<p>", unsafe_allow_html=True)
+                st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>Ilość osób: {total_people_rez}<p>", unsafe_allow_html=True)
                 with st.expander("Szczegóły"):
                     for a in elem:
                         st.write(a)
@@ -362,7 +362,7 @@ if (selected == "Rezerwacje"):
                 cruise_name_rez = elem[4]
                 cruise_date = elem[2]
                 total_people_rez = countPeopleOnCruise_rez(albatros_rez, cruise_name_rez, cruise_time_rez)
-                st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>{total_people_rez}<p>", unsafe_allow_html=True)
+                st.markdown(f"<p style=\"{info_style}\">{elem[2]} - {timeCruise(elem).strftime('%H:%M')}<br>{elem[4]}<br>Ilość osób: {total_people_rez}<p>", unsafe_allow_html=True)
                 with st.expander("Szczegóły"):
                     for a in elem:
                         st.write(a)
