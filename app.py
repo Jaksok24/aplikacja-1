@@ -16,7 +16,11 @@ def countPeopleOnCruise(ship_data, cruise_name, cruise_time):
     total_people = 0
     for cruise_data in ship_data:
         if cruise_data[2] == cruise_time and cruise_data[4] == cruise_name:
-            total_people = total_people + int(cruise_data[5])
+            try:
+                total_people += int(cruise_data[5])
+            except ValueError:
+                # Obsługa przypadku, gdy dane nie mogą być przekonwertowane na liczbę całkowitą
+                st.warning(f"Niewłaściwy format danych: {cruise_data[5]}")
     return total_people
 
 #Funkcja dodająca przewidywany czas powrotu
