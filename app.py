@@ -1,17 +1,16 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import streamlit_option_menu
-from streamlit_option_menu import option_menu
 import sqlite3
-from datetime import datetime, timedelta
 from datetime import date as day
+from datetime import datetime, timedelta
+import pandas as pd
+import streamlit as st
+from streamlit_option_menu import option_menu
+import hashlib
 
 #Konfiguracja strony
 st.set_page_config(page_title="Statki", page_icon=":ship:", layout="wide")
 
 #Style
-title_style = "color: White; background-color: #333333; text-align: Center; border-radius: 10px;"
+title_style = "color: White; background-color: #262730; text-align: Center; border-radius: 10px;"
 info_style = "color: White; background-color: #85C1C1; text-align: Center; border-radius: 10px; font-weight: bold;"
 
 #Tablice/zmienne wykorzystywane dla całej aplikacji
@@ -23,19 +22,46 @@ albatros = []
 biala_mewa = []
 kormoran = []
 ckt_vip = []
+tablicaDanych = []
+
+class Ship:
+    def __init__(self, id, customer, date, hour, ship, fee, people, nb, cruise, fee_cost, catering, note, dc):
+        self.id = id
+        self.customer = customer
+        self.date = date
+        self.hour = hour
+        self.ship = ship
+        self.fee = fee
+        self.people = people
+        self.nb = nb
+        self.cruise = cruise
+        self.fee_cost = fee_cost
+        self.catering = catering
+        self.note = note
+        self.dc = dc
+        
+    # def printData(self):
+    #     data = [f"Imię i nazwisko: {self.customer}", f"Numer telefonu: {self.dc}", f"{self.nb}", f"{self.}", f"{row[8]}", row[6], f"Zaliczka: {row[5]}", f"Kwota zaliczki: {row[9]} PLN", f"Katering: {row[10]}", f"Notatki: {row[11]}", f"ID: {row[0]}"]
+
+class Cruise:
+    def __init__(self, hour, people, ship, cruise):
+        self.hour = hour
+        self.people = people
+        self.ship = ship
+        self.cruise = cruise
+
+    def cruise_id(self):
+        hashlib.md5((str(self.cruise) + str(self.hour) + str(self.ship)).encode()).hexdigest()
+
+    def __str__(self):
+        return f"hour={self.hour}, people={self.people}"
+
 
 #Łączenie z bazą danych
 conn = sqlite3.connect('statki_database.db')
 c = conn.cursor()
-c.execute('''CREATE TABLE IF NOT EXISTS rejs (id INTEGER PRIMARY KEY, customer TEXT, date DATE, hour TIME, ship TEXT, fee INTEGER, people INTEGER, nb DECIMAL, cruise TEXT, fee_cost INTEGER, catering TEXT, note TEXT, dc TEXT)''')
-
-#Funkcja zliczająca osoby
-def countPeopleOnCruise(ship_data, cruise_data, cruise_name, cruise_time):
-    total_people = int(cruise_data[1])
-    for cruise_data in ship_data:
-        if cruise_data[0] == cruise_time and cruise_data[2] == cruise_name:
-            total_people = total_people + int(cruise_data[1])
-    return total_people
+c.execute('''CREATE TABLE IF NOT EXISTS rejs (id INTEGER PRIMARY KEY, customer TEXT, date DATE, hour TIME, ship TEXT, fee BOOLEAN, people INTEGER, nb DECIMAL, cruise TEXT, fee_cost INTEGER, catering TEXT, note TEXT, dc TEXT)''')
+c.execute('''CREATE TABLE IF NOT EXISTS rejs_new (id INTEGER PRIMARY KEY, customer TEXT, date DATE, hour TIME, ship TEXT, fee BOOLEAN, people INTEGER, nb DECIMAL, cruise TEXT, fee_cost INTEGER, catering TEXT, note TEXT, dc TEXT)''')
 
 #Funkcja dodająca przewidywany czas powrotu
 def timeCruise(element):
@@ -65,45 +91,40 @@ def timeCruise(element):
     else:
         return None
 
-#Funkcja do usuwania "przeterminowanych" rejsów
-
-#Ustawienia SideBar
+#Ustawienia SideBar (DODAĆ DO LOGOWANIA IKONE "box-arrow-in-right")
 with st.sidebar:
     selected = option_menu(
         menu_title = "Menu",
-        options = ["Zaloguj", "Strona główna", "Szczegóły", "Panel zarządzania", "Historia"],
-        icons = ["box-arrow-in-right", "house", "book", "pencil-square", "clock-history"],
+        options = ["Strona główna", "Szczegóły", "Panel zarządzania", "Historia"],
+        icons = ["house", "book", "pencil-square", "clock-history"],
         menu_icon = "list-task",
         default_index = 0,
     )
 
 #Funkcja do logowania
-def logowanie():
-    log1.append(log2)
-    st.write(log1)
 
-#Strona do logowania
-if selected == "Zaloguj":
-    st.title("Zaloguj :closed_lock_with_key:")
-    with st.container(border=True):
-        log2 = st.text_input("Podaj login", key="login")
-        pass1 = st.text_input("Podaj hasło", key="password", type="password")
-        log_button = st.button("Zaloguj")
-        if log_button:
-            logowanie()
-                        
-    st.divider()
-    with st.expander("Dodaj nowego użytkownika :male-technologist:"):
-        im = st.text_input("Podaj imię i nazwisko")
-        lg = st.text_input("Podaj login")
-        ps = st.text_input("Podaj hasło", type="password")
-        ps2 = st.text_input("Powtórz hasło", type="password")
-        user_add_button = st.button("Dodaj użytkowanika")
-        if user_add_button:
-            if (ps == ps2):
-                st.info("OK", icon="ℹ️")
-            else:
-                st.warning("Hasła nie są identyczne", icon="⚠️")
+
+# #Strona do logowania
+# if selected == "Zaloguj":
+#     st.title("Zaloguj :closed_lock_with_key:")
+#     with st.container(border=True):
+#         log2 = st.text_input("Podaj login", key="login")
+#         pass1 = st.text_input("Podaj hasło", key="password", type="password")
+#         log_button = st.button("Zaloguj")
+    
+#     if (log2 == "admin"):                    
+#         st.divider()
+#         with st.expander("Dodaj nowego użytkownika :male-technologist:"):
+#             im = st.text_input("Podaj imię i nazwisko")
+#             lg = st.text_input("Podaj login")
+#             ps = st.text_input("Podaj hasło", type="password")
+#             ps2 = st.text_input("Powtórz hasło", type="password")
+#             user_add_button = st.button("Dodaj użytkowanika")
+#             if user_add_button:
+#                 if (ps == ps2):
+#                     st.info("OK", icon="ℹ️")
+#                 else:
+#                     st.warning("Hasła nie są identyczne", icon="⚠️")
 
 #Strona główna
 if (selected == "Strona główna"):
@@ -111,32 +132,52 @@ if (selected == "Strona główna"):
     with coltd1[0]:
         theDay = st.date_input("Wybierz dzień")
     
-    #Tablice
-    tablicaDanych = []
-    
     #Łączenie z bazą danych
-    c.execute(f"SELECT * FROM rejs WHERE date='{theDay}' ORDER BY hour")
-    
+    c.execute(f"SELECT * FROM rejs_new WHERE date='{theDay}' ORDER BY hour")
     #Dodawanie danych do poszczególnych tablic
-    for new_row in c.fetchall():
-        dane_td = [f"{new_row[3]}", f"{new_row[6]}", f"{new_row[8]}", f"{new_row[4]}"]
-        tablicaDanych.append(dane_td)
+    for elem in c.fetchall():
+        o = Cruise(elem[3], elem[6], elem[8], elem[4])
+        for cruise in tablicaDanych:
+            if cruise.cruise_id() == o.cruise_id():
+                cruise.people += o.people
+                break
+        else:
+            tablicaDanych.append(o)
     
-    with st.container(border=True):
-        for elem in tablicaDanych:
-            cruise_time = elem[0]
-            cruise_name = elem[2]
-            total_people = countPeopleOnCruise(albatros, elem, cruise_name, cruise_time)
-            st.markdown(f"<h5 style='background-color: #85C1C1; color: #FFFFFF; text-align: Center; border-radius: 10px'>{elem[0]} | {total_people} osób | {elem[2]} | {elem[3]}</h5><br>", unsafe_allow_html=True)
-
+    ct = st.columns([1,1,1,1])
+    #Wyświetlanie danych
+    with ct[0]:
+        st.header("Godzina")
+    with ct[1]:
+        st.header("Ilość osób")
+    with ct[2]:
+        st.header("Rejs")
+    with ct[3]:
+        st.header("Statek")
+    for elem in tablicaDanych:
+        with ct[0]:
+            st.write(elem.hour)
+        with ct[1]:
+            st.write(str(elem.people))
+        with ct[2]:
+            st.write(elem.cruise)
+        with ct[3]:
+            st.write(elem.ship)
+            
 #Szczegóły rejsów
 if (selected == "Szczegóły"):
     st.title("Szczegóły rejsów :ship:")
     
+    coltd2 = st.columns([1,1,1,1])
+    with coltd2[0]:
+        theDay2 = st.date_input("Wybierz dzień")
+        
     #Przypisanie danych do odpowiednich tablic
-    c.execute("SELECT * FROM rejs ORDER BY hour")
+    c.execute(f"SELECT * FROM rejs WHERE date='{theDay2}' ORDER BY hour")
     for row in c.fetchall():
-        dane = [f"Imię i nazwisko: {row[1]}", f"Numer telefonu: {row[7]}", f"{row[2]}", f"{row[3]}", f"{row[8]}", row[6], f"Zaliczka: {row[5]}", f"Kwota zaliczki: {row[9]} PLN", f"Katering: {row[10]}", f"Notatki: {row[11]}"]
+        #id, customer, date, hour, ship, fee, people, nb, cruise, fee_cost, catering, note, dc
+        dane = Ship(row[1], row[7], row[2], row[3], row[8], row[6], row[5], row[9], row[10], row[11], row[0])
+        dane = [f"Imię i nazwisko: {row[1]}", f"Numer telefonu: {row[7]}", f"{row[2]}", f"{row[3]}", f"{row[8]}", row[6], f"Zaliczka: {row[5]}", f"Kwota zaliczki: {row[9]} PLN", f"Katering: {row[10]}", f"Notatki: {row[11]}", f"ID: {row[0]}"]
         if row[4] == "Albatros":
             albatros.append(dane)
         if row[4] == "Biała Mewa":
@@ -163,7 +204,7 @@ if (selected == "Szczegóły"):
         st.markdown(f"<h3 style=\"{title_style}\">CKT VIP<p>Limit osób: 12</p></h3>", unsafe_allow_html=True)
         st.divider()
     
-    #Wyświetlanie danych    
+    # Wyświetlanie danych
     with scr[0]:
         for elem in albatros:
             timeCruise(elem)
@@ -198,7 +239,7 @@ if (selected == "Szczegóły"):
                         st.write(a)
 
 #Panel zarządzania danymi
-if (selected == "Panel zarządzania"):
+if selected == "Panel zarządzania":
     tab1, tab2 = st.tabs(["Dodaj rejs", "Edytuj"])
     with tab1:
         st.header("Dodaj rejs :anchor:")
@@ -208,13 +249,13 @@ if (selected == "Panel zarządzania"):
                 customer = st.text_input("Podaj imię i nazwisko")
                 date = st.date_input("Podaj dzień", value="today", format="DD.MM.YYYY", label_visibility="visible")
                 ship = st.selectbox("Wybierz statek", ["Albatros", "Biała Mewa", "Kormoran", "CKT VIP"])
-                fee = st.selectbox("Zaliczka", ["Tak", "Nie"])
+                fee = st.selectbox("Zaliczka", ["Nie", "Tak"])
                 people = st.number_input("Ilość osób", step=1, max_value=60, min_value=0)
             
             with columns[1]:
                 phone_column = st.columns([1,3])
                 with phone_column[0]:
-                    dc = st.selectbox("Kierunkowy", ["🇵🇱 +48", "🇷🇺 +7", "🇩🇪 +49", "🇱🇹 +370", "🇱🇻 +371", "🇪🇪 +372", "🇺🇦 +380", "🇨🇿 +420", "🇸🇰 +421" ])
+                    dc = st.selectbox("Kierunkowy", ["🇵🇱 +48", "🇷🇺 +7", "🇩🇪 +49", "🇱🇹 +370", "🇱🇻 +371", "🇪🇪 +372", "🇺🇦 +380", "🇨🇿 +420", "🇸🇰 +421"])
                 with phone_column[1]:
                     nb = st.text_input("Podaj numer telefonu")
                 hour = st.time_input("Podaj godzinę")
@@ -226,12 +267,14 @@ if (selected == "Panel zarządzania"):
             add_button = st.button("Dodaj rezerwację")
             
             if add_button:
-                if (customer != "" and nb != ""):
+                if customer != "" and nb != "":
                     hour_str = hour.strftime("%H:%M")
-                    
-                    #Zapis w bazie danych
+
                     c.execute("INSERT INTO rejs (customer, date, hour, ship, fee, people, nb, cruise, fee_cost, catering, note, dc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             (customer, date, hour_str, ship, fee, people, nb, cruise, fee_cost, catering, note, dc))
+                    c.execute("INSERT INTO rejs_new (customer, date, hour, ship, fee, people, nb, cruise, fee_cost, catering, note, dc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            (customer, date, hour_str, ship, fee, people, nb, cruise, fee_cost, catering, note, dc))
+                   
                     conn.commit()
                     st.warning("Dane zostały dodane pomyślnie", icon="🆗")
                 else:
@@ -239,14 +282,19 @@ if (selected == "Panel zarządzania"):
         
     with tab2:
         st.header("Edytuj rejs :pencil:")
-
-#Historia
+        c.execute(f"SELECT * FROM rejs ORDER BY hour")
+        df = pd.DataFrame([row for row in c.fetchall()], columns=("Imię i nazwisko", "Kierunkowy", "Nr tel", "Statek", "Data", "Godzina", "Rejs", "Ilość ludzi", "Zaliczka", "Kwota zaliczki", "Katering", "Notatki", "ID"))
+        edited_df = st.data_editor(df)
+        edit_button = st.button("Zapisz zmiany")
+        # if edit_button:
+        #     for elem in df:
+        #         for columns in elem:
+        #             c.execute("UPDATE")
+        
 if (selected == "Historia"):
-    rejsy_his = []
-    
-    st.markdown("<h2 style=\"background-color: #85C1C1; color: White; padding-left: 1rem; border-radius: 10px;\">Historia resjów</h2><br>", unsafe_allow_html=True)
-    c.execute("SELECT customer, dc, nb, ship, date, hour, cruise, people, fee, fee_cost, catering, note FROM rejs GROUP BY date ORDER BY hour")
-    df_rez = pd.DataFrame([row for row in c.fetchall()], columns=("Imię i nazwisko", "Kierunkowy", "Nr tel", "Statek", "Data", "Godzina", "Rejs", "Ilość ludzi", "Zaliczka", "Kwota zaliczki", "Katering", "Notatki"))
-    st.dataframe(df_rez)
-    
+    st.markdown("<h1 style=\"background-color: #85C1C1; color: #FFFFFF; border-radius: 10px; font-weight: bold; padding-left: 1rem;\">Historia rejsów<h1>", unsafe_allow_html=True)
+    c.execute("SELECT * FROM rejs GROUP BY date ORDER BY hour")
+    for history_row in c.fetchall():
+        st.write(history_row)
+        
 conn.close()
