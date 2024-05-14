@@ -53,10 +53,6 @@ class Cruise:
     def cruise_id(self):
         hashlib.md5((str(self.cruise) + str(self.hour) + str(self.ship)).encode()).hexdigest()
 
-    def __str__(self):
-        return f"hour={self.hour}, people={self.people}"
-
-
 #Łączenie z bazą danych
 conn = sqlite3.connect('statki_database.db')
 c = conn.cursor()
