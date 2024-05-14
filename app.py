@@ -263,7 +263,7 @@ if selected == "Panel zarządzania":
                 catering = st.selectbox("Katering", ["Tak", "Nie"])
             note = st.text_area("Notatki")
                 
-            add_button = st.button("Dodaj rezerwację")
+            add_button = st.button("Dodaj rejs")
             
             if add_button:
                 if customer != "" and nb != "":
