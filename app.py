@@ -175,8 +175,7 @@ if (selected == "Szczegóły"):
     #Przypisanie danych do odpowiednich tablic
     c.execute(f"SELECT * FROM rejs WHERE date='{theDay2}' ORDER BY hour")
     for row in c.fetchall():
-        #id, customer, date, hour, ship, fee, people, nb, cruise, fee_cost, catering, note, dc
-        dane = Ship(row[1], row[7], row[2], row[3], row[8], row[6], row[5], row[9], row[10], row[11], row[0])
+        #dane = Ship(row[1], row[7], row[2], row[3], row[8], row[6], row[5], row[9], row[10], row[11], row[0])
         dane = [f"Imię i nazwisko: {row[1]}", f"Numer telefonu: {row[7]}", f"{row[2]}", f"{row[3]}", f"{row[8]}", row[6], f"Zaliczka: {row[5]}", f"Kwota zaliczki: {row[9]} PLN", f"Katering: {row[10]}", f"Notatki: {row[11]}", f"ID: {row[0]}"]
         if row[4] == "Albatros":
             albatros.append(dane)
@@ -293,8 +292,9 @@ if selected == "Panel zarządzania":
         
 if (selected == "Historia"):
     st.markdown("<h1 style=\"background-color: #85C1C1; color: #FFFFFF; border-radius: 10px; font-weight: bold; padding-left: 1rem;\">Historia rejsów<h1>", unsafe_allow_html=True)
-    c.execute("SELECT * FROM rejs GROUP BY date ORDER BY hour")
-    for history_row in c.fetchall():
-        st.write(history_row)
+    c.execute("SELECT customer, dc, nb, ship, date, hour, cruise, people, fee, fee_cost, catering, note, id FROM rejs ORDER BY date, hour")
+    df = pd.DataFrame([row for row in c.fetchall()], columns=("Imię i nazwisko", "Kierunkowy", "Nr tel", "Statek", "Data", "Godzina", "Rejs", "Ilość ludzi", "Zaliczka", "Kwota zaliczki", "Katering", "Notatki", "ID"))
+    st.dataframe(df)
+
         
 conn.close()
