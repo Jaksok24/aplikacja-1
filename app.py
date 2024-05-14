@@ -296,5 +296,4 @@ if (selected == "Historia"):
     df = pd.DataFrame([row for row in c.fetchall()], columns=("Imię i nazwisko", "Kierunkowy", "Nr tel", "Statek", "Data", "Godzina", "Rejs", "Ilość ludzi", "Zaliczka", "Kwota zaliczki", "Katering", "Notatki", "ID"))
     st.dataframe(df)
 
-        
 conn.close()
